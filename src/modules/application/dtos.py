@@ -1,6 +1,6 @@
 from uuid import UUID
-from datetime import datetime
 from typing import Optional, List
+from src.common.base_dto import BaseDTO
 from src.modules.jd.dtos import NestedJDObjectDTO
 from pydantic import BaseModel, Field, EmailStr
 
@@ -15,8 +15,7 @@ class CreateApplicationDTO(BaseModel):
     cover_letter_url: str = Field(None, max=1000)
 
 
-class ApplicationObjectDTO(BaseModel):
-    id: UUID
+class ApplicationObjectDTO(BaseDTO):
     job: NestedJDObjectDTO
     from_email: EmailStr = Field(..., max=255)
     candidate_name: str = Field(..., max=255)
@@ -24,8 +23,7 @@ class ApplicationObjectDTO(BaseModel):
     message: Optional[str] = None
     resume_url: Optional[str] = Field(None, max=255)
     cover_letter_url: Optional[str] = Field(None, max=1000)
-    created_at: str[datetime]
-    updated_at: Optional[str[datetime]] = None
+
 
 class PaginatedApplicationDTO(BaseModel):
     page: int = 1

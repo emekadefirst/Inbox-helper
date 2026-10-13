@@ -1,5 +1,6 @@
 from uuid import UUID
 from datetime import datetime
+from src.common.base_dto import BaseDTO
 from typing import Optional, List
 from pydantic import BaseModel, Field
 from src.modules.response.models import ResponseStatus
@@ -14,8 +15,7 @@ class CreateResponse(BaseModel):
     authored_response: str
     status: ResponseStatus = ResponseStatus.DRAFT
 
-class ResponseObjectDTO(BaseModel):
-    id: UUID
+class ResponseObjectDTO(BaseDTO):
     application: ApplicationNestedDTO
     classification: str = Field(..., max=100)
     classification_reason: Optional[str] = None 
@@ -23,8 +23,7 @@ class ResponseObjectDTO(BaseModel):
     authored_response: str
     status: ResponseStatus = ResponseStatus.DRAFT
     sent_at: Optional[str[datetime]] = None
-    created_at: str[datetime]
-    updated_at: Optional[str[datetime]] = None
+
 
 class PaginatedResponseDTO(BaseModel):
     page: int = 1
