@@ -17,17 +17,17 @@ class CreateResponse(BaseModel):
 
 class ResponseObjectDTO(BaseDTO):
     application: ApplicationNestedDTO
-    classification: str = Field(..., max=100)
+    classification: Optional[str] = Field(None, max=100)
     classification_reason: Optional[str] = None 
     generated_response: str
     authored_response: str
     status: ResponseStatus = ResponseStatus.DRAFT
-    sent_at: Optional[str[datetime]] = None
+    sent_at: Optional[datetime] = None
 
 
 class PaginatedResponseDTO(BaseModel):
     page: int = 1
-    page: int = 10
+    page_size: int = 10
     total: int
     data: List[ResponseObjectDTO]
 

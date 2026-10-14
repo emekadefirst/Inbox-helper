@@ -16,10 +16,10 @@ class CreateApplicationDTO(BaseModel):
 
 
 class ApplicationObjectDTO(BaseDTO):
-    job: NestedJDObjectDTO
+    job: Optional[NestedJDObjectDTO] = None
     from_email: EmailStr = Field(..., max=255)
-    candidate_name: str = Field(..., max=255)
-    subject: str = Field(..., max=500)
+    candidate_name: Optional[str] = Field(None, max=255)
+    subject: Optional[str] = Field(None, max=500)
     message: Optional[str] = None
     resume_url: Optional[str] = Field(None, max=255)
     cover_letter_url: Optional[str] = Field(None, max=1000)
@@ -27,11 +27,11 @@ class ApplicationObjectDTO(BaseDTO):
 
 class PaginatedApplicationDTO(BaseModel):
     page: int = 1
-    page: int = 10
+    page_size: int = 10
     total: int
     data: List[ApplicationObjectDTO]
 
 class ApplicationNestedDTO(BaseModel):
     id: UUID
-    job: NestedJDObjectDTO
-    candidate_name: str = Field(..., max=255)
+    job: Optional[NestedJDObjectDTO] = None
+    candidate_name: Optional[str] = Field(None, max=255)
