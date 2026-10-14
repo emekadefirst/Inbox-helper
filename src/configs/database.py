@@ -2,4 +2,4 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv() 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./inbox_helper.db")
+DATABASE_NAME = os.getenv("DATABASE_URL", "local.db")

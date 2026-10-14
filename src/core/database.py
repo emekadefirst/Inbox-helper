@@ -1,21 +1,17 @@
-from src.configs.database import DATABASE_URL
+from src.configs.database import DATABASE_NAME
 
 
 
 
 TORTOISE_ORM = {
     "connections": {
-        "default": {
-            "engine": "tortoise.backends.aiosqlite",
-            "credentials": {
-                "file_path": DATABASE_URL,
-            },
-        }
+        "default": f"sqlite://{DATABASE_NAME}",
     },
     "apps": {
         "models": {
             "models": ["src.core.models", "aerich.models"],
             "default_connection": "default",
+            "migrations": "migrations",
         }
     },
     "use_tz": True,
