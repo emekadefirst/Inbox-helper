@@ -3,6 +3,7 @@ from src.modules.application.dtos import (
     ApplicationObjectDTO,
     PaginatedApplicationDTO,
 )
+from src.modules.application.models import  ProcessingStatus
 from src.modules.application.repository import ApplicationRepository
 
 class ApplicationService:
@@ -19,7 +20,7 @@ class ApplicationService:
         id: str | None = None,
         search: str | None = None,
         job_id: str | None = None,
-        processing_status: str | None = None,
+        processing_status: ProcessingStatus | None = None,
         page: int = 1,
         page_size: int = 10,
     ) -> PaginatedApplicationDTO:
