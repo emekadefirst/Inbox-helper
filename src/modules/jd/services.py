@@ -5,7 +5,7 @@ from src.modules.jd.dtos import (
     JDObjectDTO,
     PaginatedJDResponseDTO,
 )
-from src.modules.jd.respository import JDRepository
+from src.modules.jd.repository import JDRepository
 
 
 class JDService:

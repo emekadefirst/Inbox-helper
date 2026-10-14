@@ -5,7 +5,7 @@ from src.modules.response.dtos import (
 	UpdateResponseDTO,
 )
 from src.modules.response.models import ResponseStatus
-from src.modules.response.respository import ResponseRepository
+from src.modules.response.repository import ResponseRepository
 
 
 class ResponseService:

@@ -1,7 +1,12 @@
-from fastapi import Query
+from fastapi import File, HTTPException, Query, UploadFile
 from src.common.base_router import base_router
 from src.common.base_dto import ErrorResponseDTO
-from src.modules.application.dtos import ApplicationObjectDTO, CreateApplicationDTO, PaginatedApplicationDTO
+from src.modules.application.dtos import (
+    ApplicationObjectDTO,
+    CreateApplicationDTO,
+    ImportReportDTO,
+    PaginatedApplicationDTO,
+)
 from src.modules.application.services import ApplicationService
 from src.modules.application.models import  ProcessingStatus
 
@@ -34,9 +39,15 @@ async def fetch_applications(
 
 @application_router.post(
     path="/import",
-    response_model=list[ApplicationObjectDTO],
+    response_model=ImportReportDTO,
     responses={400: {"model": ErrorResponseDTO}},
     status_code=201,
 )
-async def import_applications(file: bytes):
-    return await ApplicationService.import_applications(file)
+async def import_applications(file: UploadFile = File(...)):
+    try:
+        return await ApplicationService.import_applications(
+            content=await file.read(),
+            filename=file.filename or "",
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error

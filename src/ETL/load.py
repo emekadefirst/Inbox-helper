@@ -1,31 +1,30 @@
 import asyncio
-from dataclasses import dataclass, field
 from pathlib import Path
 from uuid import uuid4
 from src.ETL.reader import READERS
-from src.modules.application.dtos import ApplicationImportRow
+from src.modules.application.dtos import ApplicationImportRow, ImportReportDTO
 from src.ETL.reader import normalize_row
 from pydantic import ValidationError
 
-@dataclass
-class ImportReport:
-    total: int = 0
-    created: int = 0
-    skipped_duplicates: int = 0
-    errors: list[dict] = field(default_factory=list)
-    created_ids: list = field(default_factory=list)
-
-async def import_applications(path: str, repo, jobs_repo) -> ImportReport:
-    reader = READERS.get(Path(path).suffix.lower())
+async def import_applications(
+    content: bytes,
+    filename: str,
+    repo,
+    jobs_repo,
+) -> ImportReportDTO:
+    suffix = Path(filename).suffix.lower()
+    reader = READERS.get(suffix)
     if reader is None:
         raise ValueError("Unsupported file type. Use .csv, .xlsx or .json")
 
-    raw_rows = await asyncio.to_thread(lambda: list(reader(path)))   # parse off the event loop
-    report = ImportReport(total=len(raw_rows))
+    raw_rows = await asyncio.to_thread(lambda: list(reader(content)))
+    report = ImportReportDTO(total=len(raw_rows))
 
-    jobs = {j.title.lower(): j.id for j in await jobs_repo.find(limit=1000)}
+    job_rows = await jobs_repo.model.all().values_list("title", "id")
+    jobs = {title.casefold(): job_id for title, job_id in job_rows}
     parsed: list[tuple[int, ApplicationImportRow, object]] = []
-    for i, raw in enumerate(raw_rows, start=2):                    # row 1 is the header
+    row_start = 2 if suffix in {".csv", ".xlsx"} else 1
+    for i, raw in enumerate(raw_rows, start=row_start):
         try:
             row = ApplicationImportRow(**normalize_row(raw))
         except ValidationError as e:
@@ -34,27 +33,37 @@ async def import_applications(path: str, repo, jobs_repo) -> ImportReport:
         job_id = None
         if row.job_title:
             
-            job_id = jobs.get(row.job_title.lower())
+            job_id = jobs.get(row.job_title.casefold())
             if job_id is None:
                 report.errors.append({"row": i, "reason": f"unknown job_title: {row.job_title}"})
                 continue
         parsed.append((i, row, job_id))
 
     # dedupe: within the file, and against the database
-    existing = set(await repo.model.filter(
-        from_email__in=[r.from_email.lower() for _, r, _ in parsed]
-    ).values_list("from_email", "job_id", "subject"))
+    existing = set()
+    if parsed:
+        existing_rows = await repo.model.filter(
+            from_email__in=[r.from_email.lower() for _, r, _ in parsed]
+        ).values_list("from_email", "job_id", "subject")
+        existing = {
+            (email.casefold(), job_id, subject)
+            for email, job_id, subject in existing_rows
+        }
     seen, to_create = set(), []
     for i, row, job_id in parsed:
-        key = (row.from_email.lower(), job_id, row.subject)
+        key = (row.from_email.casefold(), job_id, row.subject)
         if key in existing or key in seen:
             report.skipped_duplicates += 1
             continue
         seen.add(key)
-        to_create.append({
-            "id": uuid4(), "job_id": job_id, "from_email": row.from_email.lower(),
-            **row.model_dump(exclude={"from_email", "job_title"}),
-        })
+        to_create.append(
+            {
+                "id": uuid4(),
+                "job_id": job_id,
+                "from_email": row.from_email.casefold(),
+                **row.model_dump(exclude={"from_email", "job_title"}),
+            }
+        )
 
     if to_create:
         await repo.bulk_create(to_create)

@@ -1,5 +1,5 @@
 from uuid import UUID
-from typing import Optional, List
+from typing import Any, Optional, List
 from src.common.base_dto import BaseDTO
 from src.modules.jd.dtos import NestedJDObjectDTO
 from pydantic import BaseModel, Field, EmailStr, field_validator
@@ -40,6 +40,14 @@ class ApplicationImportRow(BaseModel):
         if v and not v.lower().startswith("https://"):
             raise ValueError("must be an https URL")
         return v
+
+
+class ImportReportDTO(BaseModel):
+    total: int
+    created: int = 0
+    skipped_duplicates: int = 0
+    errors: list[dict[str, Any]] = Field(default_factory=list)
+    created_ids: list[UUID] = Field(default_factory=list)
 
 
 class PaginatedApplicationDTO(BaseModel):
