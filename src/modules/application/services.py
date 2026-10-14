@@ -3,11 +3,16 @@ from src.modules.application.dtos import (
     ApplicationObjectDTO,
     PaginatedApplicationDTO,
 )
+from src.ETL.load import import_applications
 from src.modules.application.models import  ProcessingStatus
 from src.modules.application.repository import ApplicationRepository
 
 class ApplicationService:
     repo = ApplicationRepository()
+
+    @classmethod
+    async def import_applications(file: bytes) -> list[ApplicationObjectDTO]:
+        return await import_applications(file, repo=ApplicationRepository(), dto_class=ApplicationObjectDTO)
 
     @classmethod
     async def apply(cls, data: CreateApplicationDTO) -> ApplicationObjectDTO:

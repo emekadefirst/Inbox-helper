@@ -4,7 +4,7 @@ from src.common.base_router import base_router
 from src.common.base_dto import ErrorResponseDTO
 from src.modules.jd.dtos import JDObjectDTO, CreateJDDTO, PaginatedJDResponseDTO
 
-jd_router = base_router("/jds", ["JDs"])
+jd_router = base_router("/jds", ["Job Descriptions"])
 
 @jd_router.post(
     path="",

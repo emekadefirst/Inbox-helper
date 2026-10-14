@@ -2,7 +2,7 @@ from uuid import UUID
 from typing import Optional, List
 from src.common.base_dto import BaseDTO
 from src.modules.jd.dtos import NestedJDObjectDTO
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
 
 
 class CreateApplicationDTO(BaseModel):
@@ -23,6 +23,23 @@ class ApplicationObjectDTO(BaseDTO):
     message: Optional[str] = None
     resume_url: Optional[str] = Field(None, max=255)
     cover_letter_url: Optional[str] = Field(None, max=1000)
+
+
+class ApplicationImportRow(BaseModel):
+    from_email: EmailStr
+    candidate_name: str | None = Field(None, max_length=255)
+    subject: str | None = Field(None, max_length=500)
+    message: str | None = Field(None, max_length=10_000)       # cap what reaches the LLM
+    job_title: str | None = None
+    resume_url: str | None = Field(None, max_length=1000)
+    cover_letter_url: str | None = Field(None, max_length=1000)
+
+    @field_validator("resume_url", "cover_letter_url")
+    @classmethod
+    def https_only(cls, v):
+        if v and not v.lower().startswith("https://"):
+            raise ValueError("must be an https URL")
+        return v
 
 
 class PaginatedApplicationDTO(BaseModel):

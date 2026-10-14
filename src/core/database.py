@@ -11,7 +11,7 @@ TORTOISE_ORM = {
         "models": {
             "models": ["src.core.models", "aerich.models"],
             "default_connection": "default",
-            "migrations": "migrations",
+                "migrations": "migrations",
         }
     },
     "use_tz": True,

@@ -31,3 +31,12 @@ async def fetch_applications(
     page_size: int = Query(10, ge=1, le=100, description="Number of items per page for pagination"),
 ):
     return await ApplicationService.fetch(id=id, search=search, processing_status=processing_status, page=page, page_size=page_size)
+
+@application_router.post(
+    path="/import",
+    response_model=list[ApplicationObjectDTO],
+    responses={400: {"model": ErrorResponseDTO}},
+    status_code=201,
+)
+async def import_applications(file: bytes):
+    return await ApplicationService.import_applications(file)

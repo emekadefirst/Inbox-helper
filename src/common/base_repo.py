@@ -12,15 +12,16 @@ class BaseRepository:
         self.model = model
 
     # create action 
-    async def create(self, **data: Any) -> Model:
-        try:
-            return await self.model.create(**data)
-        except IntegrityError as error:
-            raise ConflictError(f"{self.model.__name__} already exists") from error
 
     async def bulk_create(self, rows: list[dict[str, Any]]) -> None:
         try:
             await self.model.bulk_create([self.model(**row) for row in rows])
+        except IntegrityError as error:
+            raise ConflictError(f"{self.model.__name__} already exists") from error
+        
+    async def create(self, **data: Any) -> Model:
+        try:
+            return await self.model.create(**data)
         except IntegrityError as error:
             raise ConflictError(f"{self.model.__name__} already exists") from error
 
