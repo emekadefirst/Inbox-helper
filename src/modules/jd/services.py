@@ -15,7 +15,7 @@ class JDService:
     async def create(cls, data: CreateJDDTO) -> JDObjectDTO:
         values = data.model_dump()
         values["responseibilities"] = values.pop("responsibilities")
-        job = await cls.repo.create(data)
+        job = await cls.repo.create(**values)
         return JDObjectDTO.model_validate(job, from_attributes=True)
 
     @classmethod

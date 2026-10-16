@@ -3,6 +3,13 @@ from src.common.base_dto import BaseDTO
 from typing import Optional, List
 from pydantic import AliasChoices, BaseModel, Field
 
+class ClassificationCategoryDTO(BaseModel):
+    label: str
+    description: str
+    criteria: List[str]
+    reply_goal: str
+
+
 class JDObjectDTO(BaseDTO):
     title: str = Field(..., max=255)
     description: Optional[str] = None
@@ -12,7 +19,7 @@ class JDObjectDTO(BaseDTO):
     )
     qualifications: Optional[List[str]] = None
     note_to_intelligence: Optional[str] = Field(None, max=255)
-    generated_classification: Optional[List[str]] = None 
+    generated_classification: Optional[List[ClassificationCategoryDTO]] = None
 
 
 

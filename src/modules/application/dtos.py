@@ -2,6 +2,7 @@ from uuid import UUID
 from typing import Any, Optional, List
 from src.common.base_dto import BaseDTO
 from src.modules.jd.dtos import NestedJDObjectDTO, JDObjectDTO
+from src.modules.application.models import ProcessingStatus
 from pydantic import BaseModel, Field, EmailStr, field_validator
 
 
@@ -17,6 +18,7 @@ class CreateApplicationDTO(BaseModel):
 
 class ApplicationObjectDTO(BaseDTO):
     job: Optional[NestedJDObjectDTO] = None
+    processing_status: ProcessingStatus
     from_email: EmailStr = Field(..., max=255)
     candidate_name: Optional[str] = Field(None, max=255)
     subject: Optional[str] = Field(None, max=500)

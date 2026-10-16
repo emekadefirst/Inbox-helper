@@ -7,7 +7,7 @@ from src.modules.application.dtos import (
 from src.ETL.load import import_applications as load_applications
 from src.modules.application.models import  ProcessingStatus
 from src.modules.application.repository import ApplicationRepository
-from modules.jd.repository import JDRepository
+from src.modules.jd.repository import JDRepository
 
 class ApplicationService:
     repo = ApplicationRepository()
@@ -27,8 +27,9 @@ class ApplicationService:
 
     @classmethod
     async def apply(cls, data: CreateApplicationDTO) -> ApplicationObjectDTO:
-        application = await cls.repo.create(data.dict())
-        return ApplicationObjectDTO.model_validate(application, from_attributes=True)
+        application = await cls.repo.create(**data.model_dump())
+        result = await cls.repo.fetch(id=str(application.id), page_size=1)
+        return result.data[0]
 
     @classmethod
     async def fetch(

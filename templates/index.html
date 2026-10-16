@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inbox Helper</title>
+    <link rel="stylesheet" href="/ui/assets/styles.css">
+</head>
+
+<body data-page="jobs">
+    <header class="topbar">
+        <a class="brand" href="/ui">Inbox Helper</a>
+        <nav class="nav" aria-label="Main navigation">
+            <a href="/ui" aria-current="page">Job descriptions</a>
+            <a href="/ui/applications">Applications</a>
+            <a href="/ui/responses">Response review</a>
+            <a href="/docs" target="_blank" rel="noreferrer">API docs</a>
+        </nav>
+    </header>
+    <main class="page">
+        <div class="page-head">
+            <div>
+                <p class="eyebrow">Recruiting workspace</p>
+                <h1>Job descriptions</h1>
+                <p class="subhead">Set the criteria your application reviews should be measured against.</p>
+            </div>
+            <div class="toolbar">
+                <div class="stats"><span class="stat-number" id="job-total">0</span><span>active roles</span></div>
+                <button class="button" id="job-create-open" type="button">+ Add new job</button>
+            </div>
+        </div>
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
+        <section class="surface list-panel" aria-labelledby="roles-heading">
+            <div class="list-head">
+                <div>
+                    <h2 id="roles-heading">Your roles</h2><span class="muted" id="job-count">Loading roles…</span>
+                </div>
+                <div class="toolbar"><input class="search" id="job-search" type="search" placeholder="Search roles"
+                        aria-label="Search job descriptions"><button class="button secondary small" id="job-refresh"
+                        type="button">Refresh</button></div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Classification</th>
+                            <th>Added</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="job-rows"></tbody>
+                </table>
+            </div>
+            <div class="empty" id="job-empty" hidden><strong>No roles found</strong>Create a job description or change
+                your search.</div>
+        </section>
+    </main>
+    <dialog class="form-dialog" id="job-create-dialog">
+        <div class="dialog-head">
+            <div>
+                <p class="eyebrow">New role</p>
+                <h2>Add a job description</h2>
+            </div><button class="button secondary small" type="button" data-close-dialog>Close</button>
+        </div>
+        <form id="job-form">
+            <div class="field"><label for="job-title">Job title</label><input id="job-title" name="title"
+                    maxlength="255" placeholder="e.g. Backend Engineer" required></div>
+            <div class="field"><label for="job-description">Role overview</label><textarea id="job-description"
+                    name="description" placeholder="What will this person work on?" required></textarea></div>
+            <div class="field">
+                <div class="repeat-heading"><label>Responsibilities</label><button class="button secondary small"
+                        id="add-responsibility" type="button">+ Add responsibility</button></div>
+                <div class="repeat-list" id="responsibility-list">
+                    <div class="repeat-row"><input name="responsibilities" aria-label="Responsibility"
+                            placeholder="Describe a responsibility" required><button class="remove-row" type="button"
+                            data-remove-row aria-label="Remove responsibility" disabled>×</button></div>
+                </div>
+            </div>
+            <div class="field">
+                <div class="repeat-heading"><label>Qualifications</label><button class="button secondary small"
+                        id="add-qualification" type="button">+ Add qualification</button></div>
+                <div class="repeat-list" id="qualification-list">
+                    <div class="repeat-row"><input name="qualifications" aria-label="Qualification"
+                            placeholder="Describe a qualification" required><button class="remove-row" type="button"
+                            data-remove-row aria-label="Remove qualification" disabled>×</button></div>
+                </div>
+            </div>
+            <div class="field"><label for="job-note">Note for the reviewer</label><textarea id="job-note"
+                    name="note_to_intelligence" placeholder="Optional priorities or context"></textarea></div>
+            <div class="dialog-actions"><button class="button secondary" type="button"
+                    data-close-dialog>Cancel</button><button class="button" type="submit">Create role</button></div>
+        </form>
+    </dialog>
+    <dialog class="detail-dialog" id="job-dialog">
+        <div class="dialog-head">
+            <div>
+                <p class="eyebrow">Role details</p>
+                <h2 id="job-detail-title"></h2>
+            </div><button class="button secondary small" type="button" data-close-dialog>Close</button>
+        </div>
+        <div id="job-detail-content"></div>
+    </dialog>
+    <script src="/ui/assets/app.js" defer></script>
+</body>
+
+</html>

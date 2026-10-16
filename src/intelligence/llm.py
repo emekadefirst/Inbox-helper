@@ -1,9 +1,9 @@
 from langchain_anthropic import ChatAnthropic
-from src.configs import ANTHROPIC_API_KEY
+from src.configs.anthropic import ANTHROPIC_API_KEY, ANTHROPIC_MODEL
 
 
 model = ChatAnthropic(
-    model="claude-3-5-sonnet-20241022",
+    model=ANTHROPIC_MODEL,
     anthropic_api_key=ANTHROPIC_API_KEY,
     streaming=False,
 )

@@ -20,7 +20,7 @@ application_router = base_router("/applications", ["Applications"])
     status_code=201,
 )
 async def create_application(data: CreateApplicationDTO):
-    return await ApplicationService.create(data)
+    return await ApplicationService.apply(data)
 
 @application_router.get(
     path="",
@@ -51,3 +51,11 @@ async def import_applications(file: UploadFile = File(...)):
         )
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
+
+@application_router.delete(
+    path="/{id}",
+    responses={400: {"model": ErrorResponseDTO}},
+    status_code=204,    
+)
+async def delete_application(id: str):
+    return await ApplicationService.delete(id=id)

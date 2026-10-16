@@ -38,6 +38,8 @@ async def screen_application(
     sender,
     instance: Application,
     created: bool,
+    using_db,
+    update_fields,
     **kwargs,
 ) -> None:
     """Screen a newly created application in the background."""

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Response review | Inbox Helper</title>
+    <link rel="stylesheet" href="/ui/assets/styles.css">
+</head>
+<body data-page="responses">
+    <header class="topbar">
+        <a class="brand" href="/ui">Inbox Helper</a>
+        <nav class="nav" aria-label="Main navigation">
+            <a href="/ui">Job descriptions</a>
+            <a href="/ui/applications">Applications</a>
+            <a href="/ui/responses" aria-current="page">Response review</a>
+            <a href="/docs" target="_blank" rel="noreferrer">API docs</a>
+        </nav>
+    </header>
+    <main class="page">
+        <div class="page-head">
+            <div><p class="eyebrow">Human review</p><h1>Response drafts</h1><p class="subhead">Review and edit each draft before approving it. Inbox Helper does not send email.</p></div>
+            <div class="stats"><span class="stat-number" id="response-total">0</span><span>drafts</span></div>
+        </div>
+        <p class="callout">Approving a draft only changes its review status. Sending email is not available here.</p>
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
+        <section class="surface list-panel">
+            <div class="list-head"><div><h2>Review queue</h2><span class="muted" id="response-count">Loading drafts…</span></div><div class="toolbar"><input class="search" id="response-search" type="search" placeholder="Search draft text" aria-label="Search response drafts"><select id="response-status" aria-label="Filter by review status"><option value="">All statuses</option><option value="draft">Draft</option><option value="approved">Approved</option><option value="sent">Sent</option></select><button class="button secondary small" id="response-refresh" type="button">Refresh</button></div></div>
+            <div class="responses" id="response-list" aria-live="polite"></div>
+            <div class="empty" id="response-empty" hidden><strong>No response drafts found</strong>Drafts appear here after an application has been processed.</div>
+        </section>
+    </main>
+    <script src="/ui/assets/app.js" defer></script>
+</body>
+</html>

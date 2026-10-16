@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Applications | Inbox Helper</title>
+    <link rel="stylesheet" href="/ui/assets/styles.css">
+</head>
+<body data-page="applications">
+    <header class="topbar">
+        <a class="brand" href="/ui">Inbox Helper</a>
+        <nav class="nav" aria-label="Main navigation">
+            <a href="/ui">Job descriptions</a>
+            <a href="/ui/applications" aria-current="page">Applications</a>
+            <a href="/ui/responses">Response review</a>
+            <a href="/docs" target="_blank" rel="noreferrer">API docs</a>
+        </nav>
+    </header>
+    <main class="page">
+        <div class="page-head">
+            <div><p class="eyebrow">Applicant inbox</p><h1>Applications</h1><p class="subhead">Import candidate messages and follow their processing status.</p></div>
+            <div class="toolbar"><div class="stats"><span class="stat-number" id="application-total">0</span><span>applications</span></div><button class="button" id="application-create-open" type="button">Apply to a role</button></div>
+        </div>
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
+        <section class="surface list-panel">
+            <form class="import-strip" id="import-form">
+                <div class="field"><label for="application-file">Import applications</label><input id="application-file" type="file" accept=".csv,.xlsx,.json" required></div>
+                <p class="muted">CSV, XLSX, or JSON. Include candidate email and message.</p>
+                <button class="button" type="submit">Import file</button>
+            </form>
+            <div class="result-box" id="import-result" hidden></div>
+            <div class="list-head"><div><h2>Candidate inbox</h2><span class="muted" id="application-count">Loading applications…</span></div><div class="toolbar"><input class="search" id="application-search" type="search" placeholder="Search candidates" aria-label="Search applications"><select id="application-status" aria-label="Filter by status"><option value="">All statuses</option><option value="received">Received</option><option value="processing">Processing</option><option value="done">Done</option><option value="failed">Failed</option></select><button class="button secondary small" id="application-refresh" type="button">Refresh</button></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Candidate</th><th>Role</th><th>Status</th><th>Message</th><th></th></tr></thead><tbody id="application-rows"></tbody></table></div>
+            <div class="empty" id="application-empty" hidden><strong>No applications found</strong>Import a file or adjust the filters.</div>
+        </section>
+    </main>
+    <dialog class="form-dialog" id="application-create-dialog">
+        <div class="dialog-head"><div><p class="eyebrow">New application</p><h2>Apply to a role</h2></div><button class="button secondary small" type="button" data-close-dialog>Close</button></div>
+        <form id="application-form">
+            <div class="field"><label for="application-job">Job description</label><select id="application-job" name="job_id" required><option value="">Choose a role</option></select></div>
+            <div class="field"><label for="candidate-name">Candidate name</label><input id="candidate-name" name="candidate_name" maxlength="255" required></div>
+            <div class="field"><label for="candidate-email">Email</label><input id="candidate-email" name="from_email" type="email" maxlength="255" required></div>
+            <div class="field"><label for="application-subject">Subject</label><input id="application-subject" name="subject" maxlength="500" required></div>
+            <div class="field"><label for="application-message">Message</label><textarea id="application-message" name="message" required></textarea></div>
+            <div class="field"><label for="resume-url">Resume URL</label><input id="resume-url" name="resume_url" type="url" placeholder="https://…"></div>
+            <div class="field"><label for="cover-letter-url">Cover letter URL</label><input id="cover-letter-url" name="cover_letter_url" type="url" placeholder="https://…"></div>
+            <div class="dialog-actions"><button class="button secondary" type="button" data-close-dialog>Cancel</button><button class="button" type="submit">Submit application</button></div>
+        </form>
+    </dialog>
+    <dialog class="detail-dialog" id="application-dialog">
+        <div class="dialog-head"><div><p class="eyebrow">Application details</p><h2 id="application-detail-title"></h2></div><button class="button secondary small" type="button" data-close-dialog>Close</button></div>
+        <div id="application-detail-content"></div>
+    </dialog>
+    <script src="/ui/assets/app.js" defer></script>
+</body>
+</html>

@@ -29,3 +29,10 @@ async def fetch_job_descriptions(
 ):
     return await JDService.fetch(id=id, search=search, page=page, page_size=page_size)
 
+@jd_router.delete(
+    path="/{id}",
+    responses={400: {"model": ErrorResponseDTO}},
+    status_code=204,    
+)
+async def delete_application(id: str):
+    return await JDService.delete(id=id)
