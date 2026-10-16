@@ -1,0 +1,31 @@
+{
+  "applications": [
+    {
+      "from_email": "jordan.avery@example.com",
+      "candidate_name": "Jordan Avery",
+      "subject": "Application for Backend Engineer",
+      "message": "I have four years of experience building Python REST APIs and PostgreSQL services. In my current role I improved query performance and added automated integration tests. I would be glad to discuss how I approach reliable production services.",
+      "job_title": "Backend Engineer",
+      "resume_url": "https://example.com/resumes/jordan-avery.pdf",
+      "cover_letter_url": "https://example.com/letters/jordan-avery.pdf"
+    },
+    {
+      "from_email": "taylor.brooks@example.com",
+      "candidate_name": "Taylor Brooks",
+      "subject": "Backend Engineer application",
+      "message": "I am a backend developer with experience maintaining Python services, designing relational schemas, and troubleshooting production issues. I use Git and pytest daily and have collaborated with frontend and product teams to ship customer-facing features.",
+      "job_title": "Backend Engineer",
+      "resume_url": "https://example.com/resumes/taylor-brooks.pdf",
+      "cover_letter_url": "https://example.com/letters/taylor-brooks.pdf"
+    },
+    {
+      "from_email": "morgan.chen@example.com",
+      "candidate_name": "Morgan Chen",
+      "subject": "Re: Backend Engineer role",
+      "message": "I have built API integrations and data processing services in Python, with a focus on secure handling and clear tests. My recent project involved optimizing database queries and supporting a service after launch. I am interested in learning more about the team's priorities.",
+      "job_title": "Backend Engineer",
+      "resume_url": "https://example.com/resumes/morgan-chen.pdf",
+      "cover_letter_url": "https://example.com/letters/morgan-chen.pdf"
+    }
+  ]
+}
