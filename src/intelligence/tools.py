@@ -1,62 +1,65 @@
-from langchain_core.tools import tool
-from src.modules.response.dtos import CreateResponseDTO
-from src.modules.jd.repository import JDRepository
 from src.modules.application.repository import ApplicationRepository
-from src.modules.response.repository import ResponseRepository
+from src.modules.jd.repository import JDRepository
+from src.modules.response.repository import ResponseRepository 
+from langchain.tools import tool
+from typing import List
+from src.modules.response.models import ResponseStatus
 
-class ApplicationTool:
-    repo = ApplicationRepository()
+application_repo = ApplicationRepository()
+jd_repo = JDRepository()
+response_repo = ResponseRepository()
 
-    @classmethod
-    def fetch_application(cls):
-       @tool(
-            description=(
-                "Fetch an application by its ID. Returns the application object if found, otherwise raises a ValueError."
-            )
+
+@tool("Get applicant by id", description="Query the application table by id")
+async def get_applicant(application_id: str):
+    try:
+        applicant = await application_repo.agent_fetch(id=application_id)
+        if applicant is not None:
+            return applicant
+        return "applicant_id is not related to any applicant"
+    except Exception as error:
+        raise ValueError(f"Unknown Error: {error}")
+
+
+    
+@tool("Get job description by id", description="Query the job description table by id")
+async def get_job_description(jd_id: str):
+    try:
+        jd = await jd_repo.agent_fetch(id=jd_id)
+        if jd is not None:
+            return jd
+        return "jd_id is not related to any job description"
+    except Exception as error:
+        raise ValueError(f"Unknown Error: {error}")
+
+@tool("Generate classification for job description", description="Generate classification for job description")
+async def generate_job_decsription_classification(id: str, data: List[str]):
+    try:
+        jd = await jd_repo.update(id=id, generate_classification=data)
+        if jd is not None:
+            return "The Job descritpion 'generated_classification' has been updated"
+        return "The job description failed to update"
+    except Exception as error:
+        raise ValueError(f"Unknown Error: {error}")
+    
+
+@tool("Generate response for application", description="Generate respoonse an application")
+async def generate_application_response(
+    application_id: str, 
+    classification: str,
+    classification_reason: str,
+    generated_response: str
+    ):
+    try:
+        response = await response_repo.create(
+            application_id=application_id,
+            classification=classification,
+            classification_reason=classification_reason,
+            generated_response=generated_response,
+            status=ResponseStatus.DRAFT
         )
-        async def get_or_404(id: str):
-            application = await cls.repo.get(id=id)
-            if application is None:
-                raise ValueError(f"Application with id {id} not found")
-            return application
-
-class JDTool:
-    repo = JDRepository()
-
-    @classmethod
-    async def get_or_404(cls, id: str):
-        job = await cls.repo.get(id=id)
-        if job is None:
-            raise ValueError(f"Job with id {id} not found")
-        return job
-
-    @classmethod
-    async def update_jd_generated_classification(
-        cls,
-        id: str,
-        classification: str,
-    ) -> None:
-        job = await cls.repo.get(id=id)
-        if job is None:
-            raise ValueError(f"Job with id {id} not found")
-        await cls.repo.update(job, generated_classification=classification)
-
-
-
-class ResponseTool:
-    repo = ResponseRepository()
-
-    @classmethod
-    async def write(cls, data: CreateResponseDTO):
-        response = await cls.repo.create(**data.model_dump())
-        if response is None:
-            raise ValueError(f"Response with id {data.id} not found")
-        return response
-
-tools = [
-    JDTool.get_or_404,
-    JDTool.update_jd_generated_classification,
-    ApplicationTool.get_or_404,
-    ResponseTool.get_or_404,
-    ResponseTool.write,
-]
+        if response is not None:
+            return "The Response has been created"
+        return "Failed to create the response"
+    except Exception as error:
+        raise ValueError(f"Unknown Error: {error}")

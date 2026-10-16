@@ -1,7 +1,7 @@
 from uuid import UUID
 from typing import Any, Optional, List
 from src.common.base_dto import BaseDTO
-from src.modules.jd.dtos import NestedJDObjectDTO
+from src.modules.jd.dtos import NestedJDObjectDTO, JDObjectDTO
 from pydantic import BaseModel, Field, EmailStr, field_validator
 
 
@@ -17,6 +17,15 @@ class CreateApplicationDTO(BaseModel):
 
 class ApplicationObjectDTO(BaseDTO):
     job: Optional[NestedJDObjectDTO] = None
+    from_email: EmailStr = Field(..., max=255)
+    candidate_name: Optional[str] = Field(None, max=255)
+    subject: Optional[str] = Field(None, max=500)
+    message: Optional[str] = None
+    resume_url: Optional[str] = Field(None, max=255)
+    cover_letter_url: Optional[str] = Field(None, max=1000)
+
+class AgentApplicationObjectDTO(BaseModel):
+    job: JDObjectDTO
     from_email: EmailStr = Field(..., max=255)
     candidate_name: Optional[str] = Field(None, max=255)
     subject: Optional[str] = Field(None, max=500)

@@ -3,6 +3,7 @@ from src.modules.application.models import Application, ProcessingStatus
 from src.modules.application.dtos import (
     ApplicationObjectDTO,
     PaginatedApplicationDTO,
+    AgentApplicationObjectDTO
 )
 from tortoise.expressions import Q
 
@@ -10,6 +11,15 @@ from tortoise.expressions import Q
 class ApplicationRepository(BaseRepository):
     def __init__(self) -> None:
         super().__init__(Application)
+
+    async def agent_fetch(
+            self, 
+            id: str
+            ) -> AgentApplicationObjectDTO:
+        application = await self.model.filter(id=id).select_related("job").first()
+        if not application:
+            raise ValueError(f"Application with id {id} not found")
+        return ApplicationObjectDTO.model_validate(application, from_attributes=True)
 
     async def fetch(
         self,

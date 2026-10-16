@@ -8,6 +8,8 @@ class JDRepository(BaseRepository):
 	def __init__(self) -> None:
 		super().__init__(JobDescription)
 
+
+
 	async def fetch(
 		self,
 		id: str | None = None,
@@ -44,3 +46,9 @@ class JDRepository(BaseRepository):
 				for job in job_descriptions
 			],
 		)
+	
+	async def agent_fetch(self, id: str) -> JDObjectDTO:
+		jd = await self.model.filter(id=id).first()
+		if not jd:
+			raise ValueError(f"job description with id {id} is not found")
+		return JDObjectDTO.model_validate(jd, from_attributes=True)
