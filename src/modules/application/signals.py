@@ -33,22 +33,8 @@ def run_async_task(coro) -> None:
     task.add_done_callback(_task_finished)
 
 
-@post_save(Application)
-async def screen_application(
-    sender,
-    instance: Application,
-    created: bool,
-    using_db,
-    update_fields,
-    **kwargs,
-) -> None:
-    """Screen a newly created application in the background."""
-
-    if not created:
-        return
-
-    application_id = str(instance.id)
-
+def schedule_application_screening(application_id: str) -> None:
+    """Schedule background screening for an application ID."""
     run_async_task(
         screening_agent.ainvoke(
             {
@@ -72,3 +58,20 @@ async def screen_application(
             }
         )
     )
+
+
+@post_save(Application)
+async def screen_application(
+    sender,
+    instance: Application,
+    created: bool,
+    using_db,
+    update_fields,
+    **kwargs,
+) -> None:
+    """Screen a newly created application in the background."""
+
+    if not created:
+        return
+
+    schedule_application_screening(str(instance.id))

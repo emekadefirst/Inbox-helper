@@ -7,6 +7,7 @@ from src.modules.application.dtos import (
 from src.ETL.load import import_applications as load_applications
 from src.modules.application.models import  ProcessingStatus
 from src.modules.application.repository import ApplicationRepository
+from src.modules.application.signals import schedule_application_screening
 from src.modules.jd.repository import JDRepository
 
 class ApplicationService:
@@ -18,12 +19,15 @@ class ApplicationService:
         content: bytes,
         filename: str,
     ) -> ImportReportDTO:
-        return await load_applications(
+        report = await load_applications(
             content=content,
             filename=filename,
             repo=cls.repo,
             jobs_repo=JDRepository(),
         )
+        for application_id in report.created_ids:
+            schedule_application_screening(str(application_id))
+        return report
 
     @classmethod
     async def apply(cls, data: CreateApplicationDTO) -> ApplicationObjectDTO:
