@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open roles | Inbox Helper</title>
+    <link rel="stylesheet" href="/ui/assets/styles.css">
+</head>
+<body data-page="job-board">
+    <header class="topbar">
+        <a class="brand" href="/jobs"><span class="brand-mark">I</span> Inbox Helper</a>
+        <nav class="nav" aria-label="Main navigation">
+            <a href="/jobs" aria-current="page">Open roles</a>
+            <a href="/ui">Hiring workspace</a>
+        </nav>
+    </header>
+    <main class="page career-page">
+        <div class="page-head">
+            <div><p class="eyebrow">Careers</p><h1>Open roles</h1><p class="subhead">Explore current opportunities and send us your application.</p></div>
+            <div class="stats"><span class="stat-number" id="career-total">0</span><span>open roles</span></div>
+        </div>
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
+        <div class="career-toolbar"><label class="sr-only" for="career-search">Search open roles</label><input id="career-search" type="search" placeholder="Search job titles and descriptions"><button class="button secondary" id="career-refresh" type="button">Refresh roles</button></div>
+        <section class="career-list" id="career-list" aria-label="Available roles"></section>
+        <div class="empty" id="career-empty" hidden><strong>No open roles found</strong>Try another search, or check back later.</div>
+    </main>
+    <dialog class="form-dialog" id="career-apply-dialog" aria-labelledby="career-apply-title">
+        <div class="dialog-head"><div><p class="eyebrow">Application</p><h2 id="career-apply-title">Apply for this role</h2><p class="muted" id="career-selected-job"></p></div><button class="button secondary small" type="button" data-close-dialog>Close</button></div>
+        <form id="career-application-form">
+            <input id="career-job-id" name="job_id" type="hidden">
+            <div class="field"><label for="career-candidate-name">Full name</label><input id="career-candidate-name" name="candidate_name" maxlength="255" autocomplete="name" required></div>
+            <div class="field"><label for="career-email">Email</label><input id="career-email" name="from_email" type="email" maxlength="255" autocomplete="email" required></div>
+            <div class="field"><label for="career-subject">Subject</label><input id="career-subject" name="subject" maxlength="500" required></div>
+            <div class="field"><label for="career-message">Message</label><textarea id="career-message" name="message" required></textarea></div>
+            <div class="field"><label for="career-resume">Resume link (optional)</label><input id="career-resume" name="resume_url" type="url" placeholder="https://…"></div>
+            <div class="field"><label for="career-cover-letter">Cover letter link (optional)</label><input id="career-cover-letter" name="cover_letter_url" type="url" placeholder="https://…"></div>
+            <div class="dialog-actions"><button class="button secondary" type="button" data-close-dialog>Cancel</button><button class="button" type="submit">Submit application</button></div>
+        </form>
+    </dialog>
+    <script src="/ui/assets/app.js" defer></script>
+</body>
+</html>

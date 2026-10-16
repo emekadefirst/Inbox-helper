@@ -12,8 +12,8 @@ class CreateApplicationDTO(BaseModel):
     candidate_name: str = Field(..., max=255)
     subject: str = Field(..., max=500)
     message: str = Field(None)
-    resume_url: str = Field(None, max=255)
-    cover_letter_url: str = Field(None, max=1000)
+    resume_url: Optional[str] = Field(None, max=1000)
+    cover_letter_url: Optional[str] = Field(None, max=1000)
 
 
 class ApplicationObjectDTO(BaseDTO):

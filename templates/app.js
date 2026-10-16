@@ -120,6 +120,56 @@ async function loadJobs() {
 	}
 }
 
+async function loadCareerJobs() {
+	try {
+		const search = $('#career-search').value.trim();
+		const result = await request(`/jds?${queryString({ search })}`);
+		$('#career-total').textContent = result.total;
+		$('#career-empty').hidden = result.data.length > 0;
+		$('#career-list').innerHTML = result.data.map((job) => `
+			<article class="career-card">
+				<div class="career-copy"><p class="eyebrow">Now hiring</p><h2>${escapeHtml(job.title)}</h2><p class="career-snippet">${escapeHtml(job.description || 'Learn more about this opportunity by applying.')}</p></div>
+				<button class="button" type="button" data-apply-job="${escapeHtml(job.id)}" data-job-title="${escapeHtml(job.title)}">Apply now</button>
+			</article>`).join('');
+	} catch (error) {
+		showNotice(error.message, true);
+	}
+}
+
+function initJobBoard() {
+	const dialog = $('#career-apply-dialog');
+	dialog.addEventListener('click', (event) => {
+		if (event.target.closest('[data-close-dialog]') || event.target === dialog) dialog.close();
+	});
+	$('#career-list').addEventListener('click', (event) => {
+		const button = event.target.closest('[data-apply-job]');
+		if (!button) return;
+		$('#career-job-id').value = button.dataset.applyJob;
+		$('#career-apply-title').textContent = `Apply for ${button.dataset.jobTitle}`;
+		$('#career-selected-job').textContent = button.dataset.jobTitle;
+		$('#career-subject').value = `Application for ${button.dataset.jobTitle}`;
+		dialog.showModal();
+	});
+	$('#career-application-form').addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const form = event.currentTarget;
+		const button = form.querySelector('[type="submit"]');
+		const body = Object.fromEntries(new FormData(form).entries());
+		for (const key of ['resume_url', 'cover_letter_url']) body[key] = body[key].trim() || null;
+		setButtonBusy(button, true, 'Submitting…');
+		try {
+			await request('/applications', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+			form.reset();
+			dialog.close();
+			showNotice('Application submitted successfully.');
+		} catch (error) { showNotice(error.message, true); }
+		finally { setButtonBusy(button, false); }
+	});
+	$('#career-refresh').addEventListener('click', loadCareerJobs);
+	$('#career-search').addEventListener('input', debounce(loadCareerJobs));
+	loadCareerJobs();
+}
+
 function initJobs() {
 	const createDialog = $('#job-create-dialog');
 	$('#job-create-open').addEventListener('click', () => createDialog.showModal());
@@ -137,15 +187,6 @@ function initJobs() {
 			syncRepeatableRows(list);
 		});
 	}
-	for (const dialog of [createDialog, $('#job-dialog')]) {
-		dialog.addEventListener('click', (event) => {
-			if (event.target.closest('[data-close-dialog]')) dialog.close();
-		});
-		dialog.addEventListener('click', (event) => {
-			if (event.target === dialog) dialog.close();
-		});
-	}
-
 	$('#job-form').addEventListener('submit', async (event) => {
 		event.preventDefault();
 		const form = event.currentTarget;
@@ -369,5 +410,6 @@ function initResponses() {
 }
 
 if (page === 'jobs') initJobs();
+if (page === 'job-board') initJobBoard();
 if (page === 'applications') initApplications();
 if (page === 'responses') initResponses();

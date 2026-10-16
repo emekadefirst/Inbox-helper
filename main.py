@@ -28,7 +28,7 @@ app = FastAPI(
     openapi_url=OPENAPI_URL,
 )
 
-TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "templates"
+TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 app.mount("/ui/assets", StaticFiles(directory=TEMPLATES_DIR), name="ui-assets")
 
 
@@ -46,6 +46,11 @@ async def applications_page():
 @app.get("/ui/responses", include_in_schema=False)
 async def responses_page():
     return FileResponse(TEMPLATES_DIR / "response.html")
+
+
+@app.get("/jobs", include_in_schema=False)
+async def jobs_page():
+    return FileResponse(TEMPLATES_DIR / "careers.html")
 
 
 app.add_middleware(

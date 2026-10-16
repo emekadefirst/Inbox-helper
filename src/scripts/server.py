@@ -4,7 +4,7 @@ from src.configs.app import PORT
 
 def dev() -> None:
     uvicorn.run(
-        "src.main:app",
+        "main:app",
         host="0.0.0.0",
         port=PORT,
         reload=True,
@@ -14,7 +14,7 @@ def dev() -> None:
 
 def main() -> None:
     uvicorn.run(
-        "src.main:app",
+        "main:app",
         host="0.0.0.0",
         port=PORT,
         log_level="info",
